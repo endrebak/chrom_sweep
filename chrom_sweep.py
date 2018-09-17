@@ -34,7 +34,7 @@ def scan_cache(curr_qy, db_cache, hits):
     """
     if curr_qy is None:
         return db_cache
-        
+
     temp_cache = []
     for curr_db in db_cache:
         if (curr_qy.chrom == curr_db.chrom) and not after(curr_qy, curr_db):
@@ -48,7 +48,7 @@ def report_hits(curr_qy, hits):
     """
     Report the number of overlaps b/w query and database
     """
-    print str(curr_qy) + "\t" + str(len(hits))
+    print(str(curr_qy) + "\t" + str(len(hits)))
 
 
 def chrom_check(curr_qy, curr_db, query, database, db_cache, hits):
@@ -65,8 +65,8 @@ def chrom_check(curr_qy, curr_db, query, database, db_cache, hits):
         while (tmp_curr_db is not None and (tmp_curr_db.chrom < curr_qy.chrom)):
             tmp_curr_db = get_next(database)
         return (curr_qy, tmp_curr_db, [], hits)
-    # ** The Database ** has switched chroms. We must fast-forward A 
-    # and scan each against the database cache in search 
+    # ** The Database ** has switched chroms. We must fast-forward A
+    # and scan each against the database cache in search
     # of hits from the previous chrom
     elif (curr_qy.chrom < curr_db.chrom):
         tmp_curr_qy = curr_qy
@@ -89,7 +89,7 @@ def get_next(ivls):
     Return None if at EOF
     """
     try:
-        return ivls.next()
+        return next(ivls)
     except StopIteration:
         return None
 
@@ -113,8 +113,8 @@ def sweep(query, database):
         # Check if we have changed chromosomes. if so, we need to fast-forward
         # the correct chrom, report remining query overlaps, and update the cache
         (curr_qy, curr_db, db_cache, hits) = chrom_check(curr_qy, curr_db, query, database, db_cache, hits)
-        
-        # Scan the database's of seen, 
+
+        # Scan the database's of seen,
         # yet still active feature for overlaps with the current query
         db_cache = scan_cache(curr_qy, db_cache, hits)
 
@@ -127,7 +127,7 @@ def sweep(query, database):
                 hits.append(curr_db)
             db_cache.append(curr_db)
             curr_db = get_next(database)
-        
+
         # Report the query's overlaps and move on to the next query
         report_hits(curr_qy, hits)
         hits = []
@@ -137,8 +137,8 @@ def sweep(query, database):
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        print "Usage:"
-        print "chrom_sweep.py [query] [database]"
+        print("Usage:")
+        print("chrom_sweep.py [query] [database]")
         sys.exit()
 
     query_file = sys.argv[1]
@@ -147,6 +147,5 @@ if __name__ == "__main__":
     # open up the BED files.
     query       = IntervalFile(query_file) # The Query File
     database    = IntervalFile(database_file) # The Database File
-    
-    sweep(query, database)
 
+    sweep(query, database)
